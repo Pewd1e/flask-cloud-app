@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Flask Notes</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; background: #f4f6f8; color: #333; }
+        .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        input, textarea, button { width: 100%; margin-top: 8px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #0056b3; }
+        .note-item { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #eee; padding: 12px 0; }
+        .note-item:last-child { border-bottom: none; }
+        .btn-del { width: auto; background: #dc3545; padding: 6px 12px; margin: 0; }
+        .btn-del:hover { background: #a71d2a; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Додати новий запис</h2>
+        <form action="/add" method="POST">
+            <input type="text" name="title" placeholder="Заголовок" required>
+            <textarea name="content" rows="3" placeholder="Текст нотатки..." required></textarea>
+            <button type="submit">Зберегти в БД</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Збережені записи (PostgreSQL)</h2>
+        {% if notes %}
+            {% for note in notes %}
+                <div class="note-item">
+                    <div>
+                        <h4 style="margin: 0 0 6px 0;">{{ note.title }}</h4>
+                        <p style="margin: 0; color: #555;">{{ note.content }}</p>
+                        <small style="color: #888;">{{ note.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                    </div>
+                    <form action="/delete/{{ note.id }}" method="POST">
+                        <button type="submit" class="btn-del">Видалити</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Записів поки немає.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
